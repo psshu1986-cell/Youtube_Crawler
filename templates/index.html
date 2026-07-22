@@ -175,6 +175,27 @@
   .api-params td code { color: #f59e0b; font-size: 12px; }
   .api-params tr:last-child td { border-bottom: none; }
 
+  /* 分页 */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 16px; flex-wrap: wrap;
+  }
+  .page-btn {
+    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
+    padding: 6px 14px; color: #a1a1aa; font-size: 13px; cursor: pointer;
+    transition: all .2s; user-select: none;
+  }
+  .page-btn:hover { border-color: #f59e0b; color: #e4e4e7; }
+  .page-btn.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; font-weight: 600; }
+  .page-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .page-btn:disabled:hover { border-color: #3f3f46; color: #a1a1aa; }
+  .page-info { font-size: 13px; color: #71717a; white-space: nowrap; }
+  .page-size-select {
+    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
+    padding: 4px 8px; color: #e4e4e7; font-size: 13px;
+    margin-left: 6px;
+  }
+
   @media (max-width: 768px) {
     .container { padding: 16px 8px; }
     .search-box { padding: 12px; }
@@ -237,6 +258,7 @@
       <span class="count" id="viewedCount"></span>
     </div>
     <div class="table-wrap" id="viewedTable"></div>
+    <div class="pagination" id="viewedPagination"></div>
   </div>
 
   <!-- 上升最快 -->
@@ -246,6 +268,7 @@
       <span class="count" id="risingCount"></span>
     </div>
     <div class="table-wrap" id="risingTable"></div>
+    <div class="pagination" id="risingPagination"></div>
   </div>
 
   <!-- API 接口说明 -->
@@ -316,6 +339,10 @@
 </div>
 
 <script>
+let PAGE_SIZE = 20;
+let viewedData = [];
+let risingData = [];
+
 function toggleTag(el) {
   el.classList.toggle('active');
 }
@@ -332,16 +359,32 @@ function formatNum(n) {
   return n.toLocaleString();
 }
 
-function buildTable(data) {
-  if (!data || !data.length) return '<div class="empty">暂无数据</div>';
-  const rows = data.map((v, i) => {
+function renderPage(data, containerId, paginationId, page) {
+  const container = document.getElementById(containerId);
+  const pagination = document.getElementById(paginationId);
+  const total = data.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+  const p = Math.max(1, Math.min(page, totalPages));
+  const start = (p - 1) * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, total);
+  const pageData = data.slice(start, end);
+
+  if (!total) {
+    container.innerHTML = '<div class="empty">暂无数据</div>';
+    pagination.innerHTML = '';
+    return;
+  }
+
+  // 表格
+  const rows = pageData.map((v, i) => {
+    const rank = start + i + 1;
     let rankClass = 'rank';
-    if (i === 0) rankClass += ' rank-1';
-    else if (i === 1) rankClass += ' rank-2';
-    else if (i === 2) rankClass += ' rank-3';
+    if (rank === 1) rankClass += ' rank-1';
+    else if (rank === 2) rankClass += ' rank-2';
+    else if (rank === 3) rankClass += ' rank-3';
 
     return `<tr>
-      <td class="${rankClass}">${i + 1}</td>
+      <td class="${rankClass}">${rank}</td>
       <td class="title-cell"><a href="${v.url}" target="_blank" rel="noopener">${v.title}</a></td>
       <td class="channel">${v.channelTitle}</td>
       <td class="date">${v.publishedAt}</td>
@@ -351,7 +394,7 @@ function buildTable(data) {
     </tr>`;
   }).join('');
 
-  return `<table>
+  container.innerHTML = `<table>
     <thead><tr>
       <th style="width:32px">#</th>
       <th>标题</th>
@@ -363,6 +406,57 @@ function buildTable(data) {
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
+
+  // 分页按钮
+  let btns = '';
+  btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${p-1})" ${p <= 1 ? 'disabled' : ''}>‹ 上一页</button>`;
+
+  // 页码
+  const maxBtns = 5;
+  let ps = Math.max(1, p - Math.floor(maxBtns / 2));
+  let pe = Math.min(totalPages, ps + maxBtns - 1);
+  if (pe - ps + 1 < maxBtns) ps = Math.max(1, pe - maxBtns + 1);
+  if (ps > 1) btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',1)">1</button>${ps > 2 ? '<span class="page-info">…</span>' : ''}`;
+  for (let i = ps; i <= pe; i++) {
+    btns += `<button class="page-btn ${i === p ? 'active' : ''}" onclick="goPage('${containerId}','${paginationId}',${i})">${i}</button>`;
+  }
+  if (pe < totalPages) btns += `${pe < totalPages - 1 ? '<span class="page-info">…</span>' : ''}<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${totalPages})">${totalPages}</button>`;
+
+  btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${p+1})" ${p >= totalPages ? 'disabled' : ''}>下一页 ›</button>`;
+  btns += `<span class="page-info">${start+1}-${end} / 共 ${total} 条</span>`;
+
+  // 每页条数选择
+  btns += `<select class="page-size-select" onchange="changePageSize(this.value)">
+    <option value="10">10条/页</option>
+    <option value="20">20条/页</option>
+    <option value="50">50条/页</option>
+    <option value="100">100条/页</option>
+  </select>`;
+
+  pagination.innerHTML = btns;
+  // 同步下拉选中值
+  const sel = pagination.querySelector('.page-size-select');
+  if (sel) sel.value = String(PAGE_SIZE);
+}
+
+let _pageViewed = 1, _pageRising = 1;
+
+function goPage(containerId, paginationId, page) {
+  if (containerId === 'viewedTable') {
+    _pageViewed = page;
+    renderPage(viewedData, containerId, paginationId, page);
+  } else {
+    _pageRising = page;
+    renderPage(risingData, containerId, paginationId, page);
+  }
+}
+
+function changePageSize(size) {
+  PAGE_SIZE = parseInt(size);
+  try { localStorage.setItem('yt_page_size', size); } catch(e) {}
+  _pageViewed = 1; _pageRising = 1;
+  renderPage(viewedData, 'viewedTable', 'viewedPagination', 1);
+  renderPage(risingData, 'risingTable', 'risingPagination', 1);
 }
 
 async function doSearch() {
@@ -371,7 +465,6 @@ async function doSearch() {
     showError('请输入 YouTube Data API Key');
     return;
   }
-  // 存到 localStorage
   try { localStorage.setItem('yt_api_key', apiKey); } catch(e) {}
 
   const kw = document.getElementById('keywordInput').value.trim();
@@ -406,11 +499,22 @@ async function doSearch() {
       return;
     }
 
-    document.getElementById('viewedTable').innerHTML = buildTable(result.topViewed);
-    document.getElementById('viewedCount').textContent = `共 ${result.totalViewed} 条`;
+    // 恢复每页条数
+    try {
+      const saved = localStorage.getItem('yt_page_size');
+      if (saved) PAGE_SIZE = parseInt(saved);
+    } catch(e) {}
 
-    document.getElementById('risingTable').innerHTML = buildTable(result.topRising);
+    viewedData = result.topViewed || [];
+    risingData = result.topRising || [];
+    _pageViewed = 1;
+    _pageRising = 1;
+
+    document.getElementById('viewedCount').textContent = `共 ${result.totalViewed} 条`;
     document.getElementById('risingCount').textContent = `共 ${result.totalRising} 条`;
+
+    renderPage(viewedData, 'viewedTable', 'viewedPagination', 1);
+    renderPage(risingData, 'risingTable', 'risingPagination', 1);
 
     document.getElementById('viewedSection').classList.add('show');
     document.getElementById('risingSection').classList.add('show');
@@ -447,18 +551,16 @@ function toggleApi() {
   toggle.textContent = shown ? '展开' : '收起';
 }
 
-// 设置 API 地址
+// 页面加载
 document.addEventListener('DOMContentLoaded', function() {
   const base = window.location.origin;
   document.getElementById('apiUrl').textContent = base + '/api/search';
-  // 更新 curl 示例
   const codeBlocks = document.querySelectorAll('.api-code code');
   codeBlocks.forEach(block => {
     if (block.textContent.includes('{{ api_base }}')) {
       block.textContent = block.textContent.replace('{{ api_base }}', base);
     }
   });
-  // 恢复保存的 API Key
   try {
     const saved = localStorage.getItem('yt_api_key');
     if (saved) document.getElementById('apiKeyInput').value = saved;

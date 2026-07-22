@@ -50,8 +50,8 @@ def api_search():
             rising_days=rising_days, max_per_keyword=max_per_keyword,
         )
         return jsonify({
-            "topViewed": top_viewed[:30],
-            "topRising": top_rising[:30],
+            "topViewed": top_viewed,
+            "topRising": top_rising,
             "totalViewed": len(top_viewed),
             "totalRising": len(top_rising),
         })
