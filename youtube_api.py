@@ -49,6 +49,11 @@ def api_get(session: requests.Session, path: str, params: dict) -> dict | None:
     url = f"{YT_API}/{path}"
     try:
         resp = session.get(url, params=params)
+        if resp.status_code == 429:
+            raise RuntimeError(
+                "YouTube API 配额已用完（每日 10,000 units）。"
+                "请明天再试，或前往 https://console.cloud.google.com/ 增加配额。"
+            )
         resp.raise_for_status()
         return resp.json()
     except requests.exceptions.Timeout:
@@ -58,7 +63,7 @@ def api_get(session: requests.Session, path: str, params: dict) -> dict | None:
     except requests.exceptions.HTTPError as e:
         print(f"[错误] API 错误 ({resp.status_code}): {resp.text[:200]}")
     except Exception as e:
-        print(f"[错误] 未知错误: {e}")
+        raise  # 让上层捕获配額错误等
     return None
 
 
