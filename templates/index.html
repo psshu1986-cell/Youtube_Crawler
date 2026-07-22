@@ -40,6 +40,26 @@
   .search-row button:hover { opacity: .85; }
   .search-row button:disabled { opacity: .5; cursor: not-allowed; }
 
+  /* API Key 输入 */
+  .api-key-row {
+    display: flex; gap: 10px; align-items: center; margin-top: 12px;
+  }
+  .api-key-label {
+    font-size: 13px; color: #a1a1aa; white-space: nowrap;
+  }
+  .api-key-input {
+    flex: 1; max-width: 400px;
+    background: #27272a; border: 1px solid #3f3f46; border-radius: 8px;
+    padding: 8px 12px; color: #e4e4e7; font-size: 13px;
+    outline: none; transition: border-color .2s;
+  }
+  .api-key-input:focus { border-color: #f59e0b; }
+  .api-key-input::placeholder { color: #52525b; }
+  .api-key-hint {
+    font-size: 12px; color: #71717a; cursor: pointer; white-space: nowrap;
+  }
+  .api-key-hint:hover { color: #fca5a5; }
+
   /* 选项行 */
   .options { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
   .options label { font-size: 13px; color: #a1a1aa; display: flex; align-items: center; gap: 6px; }
@@ -176,6 +196,11 @@
     <div class="search-row">
       <input type="text" id="keywordInput" placeholder="输入搜索关键词，用逗号分隔…" value="{{ keywords|join('，') }}">
       <button id="searchBtn" onclick="doSearch()">🔍 搜索</button>
+    </div>
+    <div class="api-key-row">
+      <label class="api-key-label">🔑 API Key</label>
+      <input type="text" id="apiKeyInput" placeholder="输入 YouTube Data API Key" class="api-key-input">
+      <span class="api-key-hint" onclick="document.getElementById('apiKeyInput').value=''">清除</span>
     </div>
     <div class="options">
       <label>时间范围 <select id="risingDays">
@@ -341,6 +366,14 @@ function buildTable(data) {
 }
 
 async function doSearch() {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) {
+    showError('请输入 YouTube Data API Key');
+    return;
+  }
+  // 存到 localStorage
+  try { localStorage.setItem('yt_api_key', apiKey); } catch(e) {}
+
   const kw = document.getElementById('keywordInput').value.trim();
   const keywords = getActiveKeywords() || (kw ? kw.split(/[，,]/).map(s => s.trim()).filter(Boolean) : null);
   if (!keywords || !keywords.length) {
@@ -364,7 +397,7 @@ async function doSearch() {
     const resp = await fetch(window.location.origin + '/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keywords, risingDays, maxPerKeyword }),
+      body: JSON.stringify({ keywords, risingDays, maxPerKeyword, apiKey }),
     });
     const result = await resp.json();
 
@@ -425,6 +458,11 @@ document.addEventListener('DOMContentLoaded', function() {
       block.textContent = block.textContent.replace('{{ api_base }}', base);
     }
   });
+  // 恢复保存的 API Key
+  try {
+    const saved = localStorage.getItem('yt_api_key');
+    if (saved) document.getElementById('apiKeyInput').value = saved;
+  } catch(e) {}
 });
 </script>
 </body>
