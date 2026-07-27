@@ -12,12 +12,10 @@
   }
   .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
-  /* 头部 */
   .header { text-align: center; margin-bottom: 32px; }
   .header h1 { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .header p { color: #71717a; margin-top: 6px; font-size: 14px; }
 
-  /* 搜索区 */
   .search-box {
     background: #18181b; border: 1px solid #27272a; border-radius: 12px;
     padding: 20px; margin-bottom: 24px;
@@ -34,39 +32,36 @@
   .search-row button {
     background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff;
     border: none; border-radius: 8px; padding: 10px 24px;
-    font-size: 14px; font-weight: 600; cursor: pointer;
-    transition: opacity .2s; white-space: nowrap;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity .2s; white-space: nowrap;
   }
   .search-row button:hover { opacity: .85; }
   .search-row button:disabled { opacity: .5; cursor: not-allowed; }
 
-  /* API Key 输入 */
-  .api-key-row {
-    display: flex; gap: 10px; align-items: center; margin-top: 12px;
-  }
-  .api-key-label {
-    font-size: 13px; color: #a1a1aa; white-space: nowrap;
-  }
+  .api-key-row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+  .api-key-label { font-size: 13px; color: #a1a1aa; white-space: nowrap; }
   .api-key-input {
     flex: 1; max-width: 400px;
     background: #27272a; border: 1px solid #3f3f46; border-radius: 8px;
-    padding: 8px 12px; color: #e4e4e7; font-size: 13px;
-    outline: none; transition: border-color .2s;
+    padding: 8px 12px; color: #e4e4e7; font-size: 13px; outline: none; transition: border-color .2s;
   }
   .api-key-input:focus { border-color: #f59e0b; }
   .api-key-input::placeholder { color: #52525b; }
-  .api-key-hint {
-    font-size: 12px; color: #71717a; cursor: pointer; white-space: nowrap;
-  }
+  .api-key-hint { font-size: 12px; color: #71717a; cursor: pointer; white-space: nowrap; }
   .api-key-hint:hover { color: #fca5a5; }
 
-  /* 选项行 */
   .options { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
   .options label { font-size: 13px; color: #a1a1aa; display: flex; align-items: center; gap: 6px; }
-  .options select {
-    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
-    padding: 4px 8px; color: #e4e4e7; font-size: 13px;
+  .options select { background: #27272a; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 8px; color: #e4e4e7; font-size: 13px; }
+
+  /* 语言切换 */
+  .lang-toggle { display: flex; gap: 8px; margin-top: 12px; }
+  .lang-btn {
+    padding: 5px 16px; border-radius: 999px; font-size: 13px; cursor: pointer;
+    border: 1px solid #3f3f46; background: #27272a; color: #a1a1aa; transition: all .2s; user-select: none;
   }
+  .lang-btn:hover { border-color: #f59e0b; color: #e4e4e7; }
+  .lang-btn.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; }
+
   .tag-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
   .tag {
     background: #27272a; border: 1px solid #3f3f46; border-radius: 999px;
@@ -76,7 +71,6 @@
   .tag:hover { border-color: #f59e0b; color: #e4e4e7; }
   .tag.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; }
 
-  /* 加载 */
   .loading { text-align: center; padding: 60px 0; display: none; }
   .loading.show { display: block; }
   .spinner {
@@ -87,26 +81,36 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading p { color: #71717a; font-size: 14px; }
 
-  /* 错误 */
   .error { background: #7f1d1d; color: #fca5a5; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: none; font-size: 14px; }
   .error.show { display: block; }
 
-  /* 排行榜 */
+  /* Tab 导航 */
+  .tab-bar { display: none; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-bar.show { display: flex; }
+  .tab-btn {
+    padding: 8px 16px; border-radius: 8px 8px 0 0; font-size: 13px; cursor: pointer;
+    background: #18181b; border: 1px solid #27272a; border-bottom: none;
+    color: #71717a; transition: all .2s; user-select: none;
+  }
+  .tab-btn:hover { color: #e4e4e7; background: #1f1f23; }
+  .tab-btn.active { background: #18181b; color: #fbbf24; border-color: #f59e0b; font-weight: 600; }
+  .tab-btn .badge {
+    display: inline-block; background: #27272a; border-radius: 999px;
+    padding: 0 6px; font-size: 11px; margin-left: 4px; color: #71717a;
+  }
+  .tab-btn.active .badge { background: #f59e0b20; color: #fbbf24; }
+
   .ranking-section { display: none; }
   .ranking-section.show { display: block; }
+
   .ranking-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px; margin-top: 32px;
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
   }
-  .ranking-header:first-child { margin-top: 0; }
   .ranking-header h2 { font-size: 18px; font-weight: 600; }
   .ranking-header h2 .icon { margin-right: 8px; }
   .ranking-header .count { font-size: 13px; color: #71717a; }
 
-  .table-wrap {
-    background: #18181b; border: 1px solid #27272a; border-radius: 12px;
-    overflow-x: auto;
-  }
+  .table-wrap { background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   thead { background: #1f1f23; }
   th {
@@ -124,10 +128,7 @@
   .rank-3 { color: #d97706; font-weight: 600; }
 
   .title-cell { max-width: 400px; }
-  .title-cell a {
-    color: #e4e4e7; text-decoration: none; display: block;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  .title-cell a { color: #e4e4e7; text-decoration: none; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .title-cell a:hover { color: #f59e0b; }
 
   .channel { color: #a1a1aa; font-size: 13px; white-space: nowrap; }
@@ -136,17 +137,26 @@
 
   .empty { text-align: center; padding: 40px; color: #71717a; font-size: 14px; }
 
-  /* API 接口文档 */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 16px; flex-wrap: wrap;
+  }
+  .page-btn {
+    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
+    padding: 6px 14px; color: #a1a1aa; font-size: 13px; cursor: pointer; transition: all .2s; user-select: none;
+  }
+  .page-btn:hover { border-color: #f59e0b; color: #e4e4e7; }
+  .page-btn.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; font-weight: 600; }
+  .page-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .page-btn:disabled:hover { border-color: #3f3f46; color: #a1a1aa; }
+  .page-info { font-size: 13px; color: #71717a; white-space: nowrap; }
+  .page-size-select { background: #27272a; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 8px; color: #e4e4e7; font-size: 13px; margin-left: 6px; }
+
   .api-section {
     margin-top: 48px; margin-bottom: 32px;
-    background: #18181b; border: 1px solid #27272a; border-radius: 12px;
-    overflow: hidden;
+    background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow: hidden;
   }
-  .api-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px; cursor: pointer; user-select: none;
-    transition: background .2s;
-  }
+  .api-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background .2s; }
   .api-header:hover { background: #1f1f23; }
   .api-header h2 { font-size: 18px; font-weight: 600; margin: 0; }
   .api-header h2 .icon { margin-right: 8px; }
@@ -155,46 +165,16 @@
   .api-body h3 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: #a1a1aa; }
   .api-desc { color: #a1a1aa; font-size: 14px; margin-bottom: 4px; }
   .api-method { margin-bottom: 8px; }
-  .method-badge {
-    display: inline-block; padding: 2px 8px; border-radius: 4px;
-    font-size: 12px; font-weight: 700; margin-right: 8px;
-  }
+  .method-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-right: 8px; }
   .method-badge.post { background: #0d948820; color: #4ade80; }
   .api-method code { color: #e4e4e7; font-size: 14px; }
-  .api-code {
-    background: #0f0f11; border: 1px solid #27272a; border-radius: 8px;
-    padding: 14px 16px; overflow-x: auto; font-size: 13px;
-  }
+  .api-code { background: #0f0f11; border: 1px solid #27272a; border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-size: 13px; }
   .api-code code { color: #e4e4e7; font-family: 'JetBrains Mono', 'Cascadia Code', monospace; }
   .api-params { width: 100%; font-size: 13px; }
-  .api-params th {
-    text-align: left; padding: 8px 10px; font-weight: 600;
-    color: #a1a1aa; font-size: 12px; border-bottom: 1px solid #27272a;
-  }
+  .api-params th { text-align: left; padding: 8px 10px; font-weight: 600; color: #a1a1aa; font-size: 12px; border-bottom: 1px solid #27272a; }
   .api-params td { padding: 8px 10px; border-bottom: 1px solid #27272a; color: #d4d4d8; }
   .api-params td code { color: #f59e0b; font-size: 12px; }
   .api-params tr:last-child td { border-bottom: none; }
-
-  /* 分页 */
-  .pagination {
-    display: flex; align-items: center; justify-content: center;
-    gap: 6px; padding: 16px; flex-wrap: wrap;
-  }
-  .page-btn {
-    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
-    padding: 6px 14px; color: #a1a1aa; font-size: 13px; cursor: pointer;
-    transition: all .2s; user-select: none;
-  }
-  .page-btn:hover { border-color: #f59e0b; color: #e4e4e7; }
-  .page-btn.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; font-weight: 600; }
-  .page-btn:disabled { opacity: .3; cursor: not-allowed; }
-  .page-btn:disabled:hover { border-color: #3f3f46; color: #a1a1aa; }
-  .page-info { font-size: 13px; color: #71717a; white-space: nowrap; }
-  .page-size-select {
-    background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
-    padding: 4px 8px; color: #e4e4e7; font-size: 13px;
-    margin-left: 6px;
-  }
 
   @media (max-width: 768px) {
     .container { padding: 16px 8px; }
@@ -203,6 +183,7 @@
     th, td { padding: 8px 6px; }
     .title-cell { max-width: 160px; }
     .header h1 { font-size: 22px; }
+    .tab-btn { padding: 6px 10px; font-size: 12px; }
   }
 </style>
 </head>
@@ -237,6 +218,10 @@
         <option value="50">50 条</option>
       </select></label>
     </div>
+    <div class="lang-toggle">
+      <span class="lang-btn active" data-lang="zh" onclick="switchLang(this)">🇨🇳 中文</span>
+      <span class="lang-btn" data-lang="en" onclick="switchLang(this)">🇬🇧 English</span>
+    </div>
     <div class="tag-list" id="tagList">
       {% for kw in keywords %}
       <span class="tag active" onclick="toggleTag(this)">{{ kw }}</span>
@@ -251,25 +236,17 @@
     <p>正在搜索 YouTube…</p>
   </div>
 
-  <!-- 最多观看 -->
-  <div class="ranking-section" id="viewedSection">
-    <div class="ranking-header">
-      <h2><span class="icon">🔥</span>最多观看 TOP</h2>
-      <span class="count" id="viewedCount"></span>
-    </div>
-    <div class="table-wrap" id="viewedTable"></div>
-    <div class="pagination" id="viewedPagination"></div>
+  <!-- Tab 导航 -->
+  <div class="tab-bar" id="tabBar">
+    <div class="tab-btn active" data-tab="viewed" onclick="switchTab('viewed')">🔥 最多观看 <span class="badge" id="badgeViewed">0</span></div>
+    <div class="tab-btn" data-tab="liked" onclick="switchTab('liked')">👍 最多点赞 <span class="badge" id="badgeLiked">0</span></div>
+    <div class="tab-btn" data-tab="commented" onclick="switchTab('commented')">💬 最多评论 <span class="badge" id="badgeCommented">0</span></div>
+    <div class="tab-btn" data-tab="engaged" onclick="switchTab('engaged')">⚡ 互动率最高 <span class="badge" id="badgeEngaged">0</span></div>
+    <div class="tab-btn" data-tab="rising" onclick="switchTab('rising')">📈 上升最快 <span class="badge" id="badgeRising">0</span></div>
   </div>
 
-  <!-- 上升最快 -->
-  <div class="ranking-section" id="risingSection">
-    <div class="ranking-header">
-      <h2><span class="icon">📈</span>上升最快 TOP</h2>
-      <span class="count" id="risingCount"></span>
-    </div>
-    <div class="table-wrap" id="risingTable"></div>
-    <div class="pagination" id="risingPagination"></div>
-  </div>
+  <!-- 排行榜容器 -->
+  <div id="rankingArea"></div>
 
   <!-- API 接口说明 -->
   <div class="api-section">
@@ -279,51 +256,38 @@
     </div>
     <div class="api-body" id="apiBody" style="display:none">
       <div class="api-method"><span class="method-badge post">POST</span> <code id="apiUrl">/api/search</code></div>
-      <p class="api-desc">搜索 YouTube 视频，返回最多观看和上升最快排行数据。</p>
-
+      <p class="api-desc">搜索 YouTube 视频，返回五个维度的排行数据。</p>
       <h3>请求头</h3>
       <pre class="api-code"><code>Content-Type: application/json</code></pre>
-
       <h3>请求参数 (JSON Body)</h3>
       <table class="api-params">
         <thead><tr><th>参数</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td><code>keywords</code></td><td>string[]</td><td>预设关键词列表</td><td>搜索关键词数组，如 ["哪吒", "二郎神"]</td></tr>
+          <tr><td><code>keywords</code></td><td>string[]</td><td>预设关键词列表</td><td>搜索关键词数组</td></tr>
           <tr><td><code>risingDays</code></td><td>number</td><td>60</td><td>上升榜统计天数范围</td></tr>
           <tr><td><code>maxPerKeyword</code></td><td>number</td><td>30</td><td>每个关键词最多返回条数</td></tr>
+          <tr><td><code>searchLang</code></td><td>string</td><td>"zh"</td><td>"zh" 中文关键词 / "en" 英文关键词</td></tr>
         </tbody>
       </table>
-
       <h3>返回格式</h3>
       <pre class="api-code"><code>{
-  "topViewed": [
-    {
-      "videoId": "xxxxx",
-      "title": "视频标题",
-      "channelTitle": "频道名称",
-      "publishedAt": "2026-07-22 08:00",
-      "viewCount": 123456,
-      "likeCount": 1234,
-      "commentCount": 56,
-      "daysSincePublished": 1.5,
-      "velocity": 82304,
-      "url": "https://youtu.be/xxxxx"
-    }
-  ],
-  "topRising": [...],       // 同上结构，按日均观看排序
+  "topViewed": [...],     // 按观看数排序
+  "topLiked": [...],      // 按点赞数排序
+  "topCommented": [...],  // 按评论数排序
+  "topEngaged": [...],    // 按互动率排序
+  "topRising": [...],     // 按日均观看排序
   "totalViewed": 200,
   "totalRising": 150
 }</code></pre>
-
       <h3>调用示例</h3>
       <pre class="api-code"><code>curl -X POST {{ api_base }}/api/search \
   -H "Content-Type: application/json" \
   -d '{
-    "keywords": ["哪吒", "二郎神"],
+    "keywords": ["Chinese mythology", "Nezha"],
     "risingDays": 30,
-    "maxPerKeyword": 10
+    "maxPerKeyword": 10,
+    "searchLang": "en"
   }'</code></pre>
-
       <h3>配額说明</h3>
       <table class="api-params">
         <thead><tr><th>端点</th><th>单次消耗</th></tr></thead>
@@ -340,11 +304,33 @@
 
 <script>
 let PAGE_SIZE = 20;
-let viewedData = [];
-let risingData = [];
+const dataStore = {};
+const tabKeys = ['viewed', 'liked', 'commented', 'engaged', 'rising'];
+const tabLabels = { viewed: '最多观看', liked: '最多点赞', commented: '最多评论', engaged: '互动率最高', rising: '上升最快' };
+const tabIcons = { viewed: '🔥', liked: '👍', commented: '💬', engaged: '⚡', rising: '📈' };
+let currentTab = 'viewed';
+
+const enKeywords = {{ en_keywords|tojson }};
+const zhKeywords = {{ keywords|tojson }};
+let currentLang = 'zh';
 
 function toggleTag(el) {
   el.classList.toggle('active');
+}
+
+function switchLang(el) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentLang = el.dataset.lang;
+  const kwInput = document.getElementById('keywordInput');
+  const tagList = document.getElementById('tagList');
+  if (currentLang === 'en') {
+    kwInput.placeholder = 'Enter keywords, comma separated…';
+    tagList.innerHTML = enKeywords.map(k => `<span class="tag active" onclick="toggleTag(this)">${k}</span>`).join('');
+  } else {
+    kwInput.placeholder = '输入搜索关键词，用逗号分隔…';
+    tagList.innerHTML = zhKeywords.map(k => `<span class="tag active" onclick="toggleTag(this)">${k}</span>`).join('');
+  }
 }
 
 function getActiveKeywords() {
@@ -359,120 +345,221 @@ function formatNum(n) {
   return n.toLocaleString();
 }
 
-function renderPage(data, containerId, paginationId, page) {
-  const container = document.getElementById(containerId);
-  const pagination = document.getElementById(paginationId);
+function formatEngagement(v) {
+  const rate = (v.likeCount + v.commentCount) / Math.max(v.viewCount, 1);
+  return (rate * 100).toFixed(2) + '%';
+}
+
+function getExtraColumns(tab) {
+  if (tab === 'liked') return [{ label: '点赞', key: 'likeCount', fn: formatNum }];
+  if (tab === 'commented') return [{ label: '评论', key: 'commentCount', fn: formatNum }];
+  if (tab === 'engaged') return [{ label: '互动率', key: null, fn: formatEngagement }];
+  if (tab === 'rising') return [{ label: '日均观看', key: 'velocity', fn: formatNum }];
+  return [{ label: '点赞', key: 'likeCount', fn: formatNum }];
+}
+
+function renderSection(tab) {
+  const data = dataStore[tab] || [];
   const total = data.length;
   const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
-  const p = Math.max(1, Math.min(page, totalPages));
-  const start = (p - 1) * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, total);
-  const pageData = data.slice(start, end);
+  const page = 1;
+  const start = 0;
+  const end = Math.min(PAGE_SIZE, total);
+  const pageData = data.slice(0, end);
+  const extraCols = getExtraColumns(tab);
 
+  let html = '';
   if (!total) {
-    container.innerHTML = '<div class="empty">暂无数据</div>';
-    pagination.innerHTML = '';
-    return;
+    html = '<div class="empty">暂无数据</div>';
+  } else {
+    const rows = pageData.map((v, i) => {
+      const rank = i + 1;
+      let rc = 'rank';
+      if (rank === 1) rc += ' rank-1';
+      else if (rank === 2) rc += ' rank-2';
+      else if (rank === 3) rc += ' rank-3';
+
+      let extras = '';
+      if (tab === 'liked') extras = `<td class="num">${formatNum(v.likeCount)}</td>`;
+      else if (tab === 'commented') extras = `<td class="num">${formatNum(v.commentCount)}</td>`;
+      else if (tab === 'engaged') extras = `<td class="num">${formatEngagement(v)}</td>`;
+      else if (tab === 'rising') extras = `<td class="num">${formatNum(v.velocity)}</td>`;
+      else extras = `<td class="num">${formatNum(v.likeCount)}</td>`;
+
+      return `<tr>
+        <td class="${rc}">${rank}</td>
+        <td class="title-cell"><a href="${v.url}" target="_blank" rel="noopener">${v.title}</a></td>
+        <td class="channel">${v.channelTitle}</td>
+        <td class="date">${v.publishedAt}</td>
+        <td class="num">${formatNum(v.viewCount)}</td>
+        ${extras}
+      </tr>`;
+    }).join('');
+
+    let extraTh = '';
+    if (tab === 'liked') extraTh = '<th class="num">点赞</th>';
+    else if (tab === 'commented') extraTh = '<th class="num">评论</th>';
+    else if (tab === 'engaged') extraTh = '<th class="num">互动率</th>';
+    else if (tab === 'rising') extraTh = '<th class="num">日均观看</th>';
+    else extraTh = '<th class="num">点赞</th>';
+
+    html = `<table>
+      <thead><tr>
+        <th style="width:32px">#</th>
+        <th>标题</th>
+        <th>频道</th>
+        <th>发布时间</th>
+        <th class="num">观看</th>
+        ${extraTh}
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
   }
 
-  // 表格
+  // 分页
+  let pageHtml = '';
+  if (total > PAGE_SIZE) {
+    let btns = '';
+    btns += `<button class="page-btn" onclick="goPageTab('${tab}',${1})" disabled>‹ 上一页</button>`;
+    btns += `<button class="page-btn active">1</button>`;
+    if (totalPages > 1) btns += `<button class="page-btn" onclick="goPageTab('${tab}',${2})">2</button>`;
+    if (totalPages > 2) btns += `<span class="page-info">…</span>`;
+    if (totalPages > 1) btns += `<button class="page-btn" onclick="goPageTab('${tab}',${totalPages})">${totalPages}</button>`;
+    btns += `<button class="page-btn" onclick="goPageTab('${tab}',${2})" ${totalPages <= 1 ? 'disabled' : ''}>下一页 ›</button>`;
+    btns += `<span class="page-info">1-${end} / 共 ${total} 条</span>`;
+    btns += `<select class="page-size-select" onchange="changePageSizeTab(this.value,'${tab}')">
+      <option value="10">10条/页</option>
+      <option value="20">20条/页</option>
+      <option value="50">50条/页</option>
+      <option value="100">100条/页</option>
+    </select>`;
+    pageHtml = `<div class="pagination">${btns}</div>`;
+  }
+
+  document.getElementById('rankingArea').innerHTML = `<div class="ranking-section show">
+    <div class="ranking-header">
+      <h2><span class="icon">${tabIcons[tab]}</span>${tabLabels[tab]} TOP</h2>
+      <span class="count">共 ${total} 条</span>
+    </div>
+    <div class="table-wrap">${html}</div>
+    ${pageHtml}
+  </div>`;
+
+  // 同步分页下拉
+  const sel = document.querySelector('.page-size-select');
+  if (sel) sel.value = String(PAGE_SIZE);
+}
+
+// 分页切换
+const tabPages = { viewed: 1, liked: 1, commented: 1, engaged: 1, rising: 1 };
+
+function goPageTab(tab, page) {
+  tabPages[tab] = page;
+  const data = dataStore[tab] || [];
+  const totalPages = Math.ceil(data.length / PAGE_SIZE) || 1;
+  const p = Math.max(1, Math.min(page, totalPages));
+  const start = (p - 1) * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, data.length);
+  const pageData = data.slice(start, end);
+  const extraCols = getExtraColumns(tab);
+
+  if (!data.length) return;
+
   const rows = pageData.map((v, i) => {
     const rank = start + i + 1;
-    let rankClass = 'rank';
-    if (rank === 1) rankClass += ' rank-1';
-    else if (rank === 2) rankClass += ' rank-2';
-    else if (rank === 3) rankClass += ' rank-3';
-
+    let rc = 'rank';
+    if (rank === 1) rc += ' rank-1';
+    else if (rank === 2) rc += ' rank-2';
+    else if (rank === 3) rc += ' rank-3';
+    let extras = '';
+    if (tab === 'liked') extras = `<td class="num">${formatNum(v.likeCount)}</td>`;
+    else if (tab === 'commented') extras = `<td class="num">${formatNum(v.commentCount)}</td>`;
+    else if (tab === 'engaged') extras = `<td class="num">${formatEngagement(v)}</td>`;
+    else if (tab === 'rising') extras = `<td class="num">${formatNum(v.velocity)}</td>`;
+    else extras = `<td class="num">${formatNum(v.likeCount)}</td>`;
     return `<tr>
-      <td class="${rankClass}">${rank}</td>
+      <td class="${rc}">${rank}</td>
       <td class="title-cell"><a href="${v.url}" target="_blank" rel="noopener">${v.title}</a></td>
       <td class="channel">${v.channelTitle}</td>
       <td class="date">${v.publishedAt}</td>
       <td class="num">${formatNum(v.viewCount)}</td>
-      <td class="num">${formatNum(v.likeCount)}</td>
-      <td class="num">${formatNum(v.velocity)}</td>
+      ${extras}
     </tr>`;
   }).join('');
 
-  container.innerHTML = `<table>
+  let extraTh = '';
+  if (tab === 'liked') extraTh = '<th class="num">点赞</th>';
+  else if (tab === 'commented') extraTh = '<th class="num">评论</th>';
+  else if (tab === 'engaged') extraTh = '<th class="num">互动率</th>';
+  else if (tab === 'rising') extraTh = '<th class="num">日均观看</th>';
+  else extraTh = '<th class="num">点赞</th>';
+
+  const tableHtml = `<table>
     <thead><tr>
       <th style="width:32px">#</th>
       <th>标题</th>
       <th>频道</th>
       <th>发布时间</th>
       <th class="num">观看</th>
-      <th class="num">点赞</th>
-      <th class="num">日均观看</th>
+      ${extraTh}
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
 
-  // 分页按钮
+  // 重建分页
   let btns = '';
-  btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${p-1})" ${p <= 1 ? 'disabled' : ''}>‹ 上一页</button>`;
-
-  // 页码
+  const total = data.length;
+  const totalPg = Math.ceil(total / PAGE_SIZE) || 1;
+  btns += `<button class="page-btn" onclick="goPageTab('${tab}',${p-1})" ${p <= 1 ? 'disabled' : ''}>‹ 上一页</button>`;
   const maxBtns = 5;
   let ps = Math.max(1, p - Math.floor(maxBtns / 2));
-  let pe = Math.min(totalPages, ps + maxBtns - 1);
+  let pe = Math.min(totalPg, ps + maxBtns - 1);
   if (pe - ps + 1 < maxBtns) ps = Math.max(1, pe - maxBtns + 1);
-  if (ps > 1) btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',1)">1</button>${ps > 2 ? '<span class="page-info">…</span>' : ''}`;
-  for (let i = ps; i <= pe; i++) {
-    btns += `<button class="page-btn ${i === p ? 'active' : ''}" onclick="goPage('${containerId}','${paginationId}',${i})">${i}</button>`;
-  }
-  if (pe < totalPages) btns += `${pe < totalPages - 1 ? '<span class="page-info">…</span>' : ''}<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${totalPages})">${totalPages}</button>`;
-
-  btns += `<button class="page-btn" onclick="goPage('${containerId}','${paginationId}',${p+1})" ${p >= totalPages ? 'disabled' : ''}>下一页 ›</button>`;
+  if (ps > 1) btns += `<button class="page-btn" onclick="goPageTab('${tab}',1)">1</button>${ps > 2 ? '<span class="page-info">…</span>' : ''}`;
+  for (let i = ps; i <= pe; i++) btns += `<button class="page-btn ${i === p ? 'active' : ''}" onclick="goPageTab('${tab}',${i})">${i}</button>`;
+  if (pe < totalPg) btns += `${pe < totalPg - 1 ? '<span class="page-info">…</span>' : ''}<button class="page-btn" onclick="goPageTab('${tab}',${totalPg})">${totalPg}</button>`;
+  btns += `<button class="page-btn" onclick="goPageTab('${tab}',${p+1})" ${p >= totalPg ? 'disabled' : ''}>下一页 ›</button>`;
   btns += `<span class="page-info">${start+1}-${end} / 共 ${total} 条</span>`;
-
-  // 每页条数选择
-  btns += `<select class="page-size-select" onchange="changePageSize(this.value)">
+  btns += `<select class="page-size-select" onchange="changePageSizeTab(this.value,'${tab}')">
     <option value="10">10条/页</option>
     <option value="20">20条/页</option>
     <option value="50">50条/页</option>
     <option value="100">100条/页</option>
   </select>`;
 
-  pagination.innerHTML = btns;
-  // 同步下拉选中值
-  const sel = pagination.querySelector('.page-size-select');
-  if (sel) sel.value = String(PAGE_SIZE);
-}
-
-let _pageViewed = 1, _pageRising = 1;
-
-function goPage(containerId, paginationId, page) {
-  if (containerId === 'viewedTable') {
-    _pageViewed = page;
-    renderPage(viewedData, containerId, paginationId, page);
-  } else {
-    _pageRising = page;
-    renderPage(risingData, containerId, paginationId, page);
+  const tableWrap = document.querySelector('.table-wrap');
+  if (tableWrap) tableWrap.innerHTML = tableHtml;
+  const pagination = document.querySelector('.ranking-section.show .pagination');
+  if (pagination) {
+    pagination.innerHTML = btns;
+    const sel = pagination.querySelector('.page-size-select');
+    if (sel) sel.value = String(PAGE_SIZE);
   }
 }
 
-function changePageSize(size) {
+function changePageSizeTab(size, tab) {
   PAGE_SIZE = parseInt(size);
   try { localStorage.setItem('yt_page_size', size); } catch(e) {}
-  _pageViewed = 1; _pageRising = 1;
-  renderPage(viewedData, 'viewedTable', 'viewedPagination', 1);
-  renderPage(risingData, 'risingTable', 'risingPagination', 1);
+  tabPages[tab] = 1;
+  goPageTab(tab, 1);
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  tabPages[tab] = 1;
+  renderSection(tab);
 }
 
 async function doSearch() {
   const apiKey = document.getElementById('apiKeyInput').value.trim();
-  if (!apiKey) {
-    showError('请输入 YouTube Data API Key');
-    return;
-  }
+  if (!apiKey) { showError('请输入 YouTube Data API Key'); return; }
   try { localStorage.setItem('yt_api_key', apiKey); } catch(e) {}
 
   const kw = document.getElementById('keywordInput').value.trim();
   const keywords = getActiveKeywords() || (kw ? kw.split(/[，,]/).map(s => s.trim()).filter(Boolean) : null);
-  if (!keywords || !keywords.length) {
-    showError('请输入至少一个搜索关键词');
-    return;
-  }
+  if (!keywords || !keywords.length) { showError('请输入至少一个搜索关键词'); return; }
 
   const risingDays = parseInt(document.getElementById('risingDays').value);
   const maxPerKeyword = parseInt(document.getElementById('maxPerKeyword').value);
@@ -480,44 +567,44 @@ async function doSearch() {
   const btn = document.getElementById('searchBtn');
   btn.disabled = true;
   btn.textContent = '⏳ 搜索中…';
-
   hideError();
   document.getElementById('loading').classList.add('show');
-  document.getElementById('viewedSection').classList.remove('show');
-  document.getElementById('risingSection').classList.remove('show');
+  document.getElementById('tabBar').classList.remove('show');
 
   try {
     const resp = await fetch(window.location.origin + '/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keywords, risingDays, maxPerKeyword, apiKey }),
+      body: JSON.stringify({ keywords, risingDays, maxPerKeyword, apiKey, searchLang: currentLang }),
     });
     const result = await resp.json();
+    if (result.error) { showError(result.error); return; }
 
-    if (result.error) {
-      showError(result.error);
-      return;
-    }
-
-    // 恢复每页条数
     try {
       const saved = localStorage.getItem('yt_page_size');
       if (saved) PAGE_SIZE = parseInt(saved);
     } catch(e) {}
 
-    viewedData = result.topViewed || [];
-    risingData = result.topRising || [];
-    _pageViewed = 1;
-    _pageRising = 1;
+    dataStore.viewed = result.topViewed || [];
+    dataStore.liked = result.topLiked || [];
+    dataStore.commented = result.topCommented || [];
+    dataStore.engaged = result.topEngaged || [];
+    dataStore.rising = result.topRising || [];
 
-    document.getElementById('viewedCount').textContent = `共 ${result.totalViewed} 条`;
-    document.getElementById('risingCount').textContent = `共 ${result.totalRising} 条`;
+    tabKeys.forEach(k => { tabPages[k] = 1; });
+    currentTab = 'viewed';
 
-    renderPage(viewedData, 'viewedTable', 'viewedPagination', 1);
-    renderPage(risingData, 'risingTable', 'risingPagination', 1);
+    document.getElementById('badgeViewed').textContent = result.totalViewed;
+    document.getElementById('badgeLiked').textContent = (result.topLiked || []).length;
+    document.getElementById('badgeCommented').textContent = (result.topCommented || []).length;
+    document.getElementById('badgeEngaged').textContent = (result.topEngaged || []).length;
+    document.getElementById('badgeRising').textContent = result.totalRising;
 
-    document.getElementById('viewedSection').classList.add('show');
-    document.getElementById('risingSection').classList.add('show');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="viewed"]').classList.add('active');
+    document.getElementById('tabBar').classList.add('show');
+
+    renderSection('viewed');
   } catch (e) {
     showError('请求失败: ' + e.message);
   } finally {
@@ -532,17 +619,12 @@ function showError(msg) {
   el.textContent = '❌ ' + msg;
   el.classList.add('show');
 }
+function hideError() { document.getElementById('errorBox').classList.remove('show'); }
 
-function hideError() {
-  document.getElementById('errorBox').classList.remove('show');
-}
-
-// Enter 键搜索
 document.getElementById('keywordInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doSearch();
 });
 
-// API 文档展开/收起
 function toggleApi() {
   const body = document.getElementById('apiBody');
   const toggle = document.getElementById('apiToggle');
@@ -551,7 +633,6 @@ function toggleApi() {
   toggle.textContent = shown ? '展开' : '收起';
 }
 
-// 页面加载
 document.addEventListener('DOMContentLoaded', function() {
   const base = window.location.origin;
   document.getElementById('apiUrl').textContent = base + '/api/search';

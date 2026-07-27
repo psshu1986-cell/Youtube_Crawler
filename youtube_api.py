@@ -14,6 +14,7 @@ YT_API = "https://www.googleapis.com/youtube/v3"
 
 # 默认搜索关键词（用户可自定义）
 DEFAULT_KEYWORDS = [
+    # 中文关键词
     "中国神仙 神话故事",
     "中国神话 传说",
     "封神榜 电影 电视剧",
@@ -24,6 +25,20 @@ DEFAULT_KEYWORDS = [
     "古代神话 中国",
     "天庭 众神",
     "中国诸神",
+]
+
+# 英文关键词（面向国外观众）
+EN_KEYWORDS = [
+    "Chinese mythology",
+    "Chinese gods and goddesses",
+    "Chinese folklore stories",
+    "Journey to the West",
+    "Nezha animated",
+    "Sun Wukong story",
+    "Chinese myth documentary",
+    "fengshen yanyi",
+    "Chinese legend animated",
+    "Ancient China mythology",
 ]
 
 EXCLUDE_KEYWORDS = [
@@ -71,6 +86,7 @@ def search_videos(
     session: requests.Session, api_key: str, query: str,
     order: str = "viewCount", max_results: int = 50,
     published_after: str = None, video_duration: str = "long",
+    relevance_lang: str = "zh",
 ) -> list[dict]:
     params = dict(
         part="snippet",
@@ -78,7 +94,7 @@ def search_videos(
         type="video",
         order=order,
         maxResults=min(max_results, 50),
-        relevanceLanguage="zh",
+        relevanceLanguage=relevance_lang,
         key=api_key,
     )
     if video_duration:
@@ -147,7 +163,7 @@ def iso8601_duration_to_seconds(dur: str) -> int:
 def fetch_by_keywords(
     session: requests.Session, api_key: str, keywords: list[str],
     order: str, max_per_keyword: int = 50, published_after: str = None,
-    video_duration: str = "long",
+    video_duration: str = "long", relevance_lang: str = "zh",
 ) -> list[dict]:
     seen = set()
     rows = []
@@ -196,15 +212,23 @@ def fetch_rankings(
     api_key: str, keywords: list[str] = None,
     proxy: str = None, rising_days: int = 60,
     max_per_keyword: int = 50,
-) -> tuple[list[dict], list[dict]]:
-    """返回 (最多观看排行, 上升最快排行)"""
-    keywords = keywords or DEFAULT_KEYWORDS
+    search_lang: str = "zh",
+) -> tuple[list[dict], list[dict], list[dict], list[dict], list[dict]]:
+    """返回 (最多观看, 最多点赞, 最多评论, 互动率最高, 上升最快)"""
+    if search_lang == "en":
+        keywords = keywords or EN_KEYWORDS
+        relevance_lang = "en"
+    else:
+        keywords = keywords or DEFAULT_KEYWORDS
+        relevance_lang = "zh"
+
     session = get_session(proxy)
 
     # 最多观看
     top_viewed = fetch_by_keywords(
         session, api_key, keywords,
         order="viewCount", max_per_keyword=max_per_keyword,
+        relevance_lang=relevance_lang,
     )
 
     # 上升最快
@@ -212,10 +236,19 @@ def fetch_rankings(
     top_rising = fetch_by_keywords(
         session, api_key, keywords,
         order="date", max_per_keyword=max_per_keyword,
-        published_after=since,
+        published_after=since, relevance_lang=relevance_lang,
     )
 
     # 按 velocity 排序
     top_rising.sort(key=lambda x: x["velocity"], reverse=True)
 
-    return top_viewed, top_rising
+    # 衍生排序（基于同一批数据）
+    top_liked = sorted(top_viewed, key=lambda x: x["likeCount"], reverse=True)
+    top_commented = sorted(top_viewed, key=lambda x: x["commentCount"], reverse=True)
+    top_engaged = sorted(
+        top_viewed,
+        key=lambda x: (x["likeCount"] + x["commentCount"]) / max(x["viewCount"], 1),
+        reverse=True,
+    )
+
+    return top_viewed, top_liked, top_commented, top_engaged, top_rising

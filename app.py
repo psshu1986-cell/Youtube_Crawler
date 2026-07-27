@@ -15,7 +15,7 @@ if sys.platform == "win32":
 
 from flask import Flask, render_template, request, jsonify
 
-from youtube_api import DEFAULT_KEYWORDS, fetch_rankings
+from youtube_api import DEFAULT_KEYWORDS, EN_KEYWORDS, fetch_rankings
 
 app = Flask(__name__)
 
@@ -27,7 +27,7 @@ PROXY = None
 @app.route("/")
 def index():
     api_base = request.host_url.rstrip("/")
-    return render_template("index.html", keywords=DEFAULT_KEYWORDS, api_base=api_base)
+    return render_template("index.html", keywords=DEFAULT_KEYWORDS, en_keywords=EN_KEYWORDS, api_base=api_base)
 
 
 @app.route("/api/search", methods=["POST"])
@@ -43,14 +43,19 @@ def api_search():
     keywords = data.get("keywords", DEFAULT_KEYWORDS)
     rising_days = int(data.get("risingDays", 60))
     max_per_keyword = int(data.get("maxPerKeyword", 30))
+    search_lang = data.get("searchLang", "zh")
 
     try:
-        top_viewed, top_rising = fetch_rankings(
+        top_viewed, top_liked, top_commented, top_engaged, top_rising = fetch_rankings(
             api_key, keywords=keywords, proxy=PROXY,
             rising_days=rising_days, max_per_keyword=max_per_keyword,
+            search_lang=search_lang,
         )
         return jsonify({
             "topViewed": top_viewed,
+            "topLiked": top_liked,
+            "topCommented": top_commented,
+            "topEngaged": top_engaged,
             "topRising": top_rising,
             "totalViewed": len(top_viewed),
             "totalRising": len(top_rising),
