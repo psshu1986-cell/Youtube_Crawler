@@ -1,4 +1,0 @@
-google-api-python-client==2.153.0
-pandas==2.2.3
-rich==13.9.4
-requests==2.32.3
