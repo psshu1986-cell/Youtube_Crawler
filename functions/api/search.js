@@ -71,9 +71,7 @@ async function searchKeyword(apiKey, query, order, publishedAfter) {
   for (const item of data.items) {
     const videoId = item.id.videoId;
     const title = item.snippet.title;
-    // 過濾 shorts
-    if (title.toLowerCase().includes('#shorts')) continue;
-    results.push({
+      results.push({
       videoId,
       title,
       channelId: item.snippet.channelId,
@@ -99,7 +97,6 @@ async function getStats(apiKey, videoIds) {
       const vid = item.id;
       const rawDur = item.contentDetails?.duration || 'PT0S';
       const durSec = isoDurationToSeconds(rawDur);
-      if (durSec < 300) continue; // 過濾短於5分鐘
       const stat = item.statistics || {};
       statsMap[vid] = {
         viewCount: parseInt(stat.viewCount) || 0,
