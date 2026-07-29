@@ -70,8 +70,8 @@ def main():
     parser = argparse.ArgumentParser(description="YouTube 排行榜 Web 服务")
     parser.add_argument("--api-key", help="YouTube Data API Key（可选，前端也可输入）")
     parser.add_argument("--proxy", "-p", help="代理地址，如 http://127.0.0.1:7897")
-    parser.add_argument("--port", type=int, default=5000, help="服务端口")
-    parser.add_argument("--host", default="127.0.0.1", help="监听地址")
+    parser.add_argument("--port", type=int, default=10000, help="服务端口")
+    parser.add_argument("--host", default="0.0.0.0", help="监听地址")
     args = parser.parse_args()
 
     API_KEY = args.api_key or os.environ.get("YOUTUBE_API_KEY")
@@ -80,7 +80,7 @@ def main():
     else:
         print("▶ 已加载 API Key（也可在前端覆盖）")
 
-    PROXY = args.proxy
+    PROXY = args.proxy or os.environ.get("PROXY_URL")
 
     print(f"▶ 启动 Web 服务: http://{args.host}:{args.port}")
     app.run(host=args.host, port=args.port, debug=True)
