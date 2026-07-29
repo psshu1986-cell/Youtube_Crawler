@@ -15,6 +15,9 @@ venv/
 # CSV output
 *.csv
 
+# Wrangler
+.wrangler/
+
 # OS
 Thumbs.db
 .DS_Store
