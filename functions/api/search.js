@@ -3,10 +3,24 @@
 
 const YT_API = 'https://www.googleapis.com/youtube/v3';
 
-// YouTube API 調用工具
+// YouTube API 調用工具（自帶超時）
+async function apiFetch(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const resp = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+    return resp;
+  } catch (e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') throw new Error('請求 YouTube API 超時，請稍後重試');
+    throw e;
+  }
+}
+
 async function apiGet(params) {
   const url = YT_API + '/search?' + new URLSearchParams(params);
-  const resp = await fetch(url);
+  const resp = await apiFetch(url);
   if (resp.status === 429) {
     throw new Error('YouTube API 配額已用完（每日 10,000 units）。請明天再試，或前往 https://console.cloud.google.com/ 增加配額。');
   }
@@ -19,7 +33,10 @@ async function apiGet(params) {
 
 async function videosGet(params) {
   const url = YT_API + '/videos?' + new URLSearchParams(params);
-  const resp = await fetch(url);
+  const resp = await apiFetch(url);
+  if (resp.status === 429) {
+    throw new Error('YouTube API 配額已用完。');
+  }
   if (!resp.ok) {
     const text = await resp.text();
     throw new Error(`Videos API 錯誤 (${resp.status}): ${text.slice(0, 200)}`);
