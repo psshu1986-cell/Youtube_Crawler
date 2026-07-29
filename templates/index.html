@@ -53,24 +53,6 @@
   .options label { font-size: 13px; color: #a1a1aa; display: flex; align-items: center; gap: 6px; }
   .options select { background: #27272a; border: 1px solid #3f3f46; border-radius: 6px; padding: 4px 8px; color: #e4e4e7; font-size: 13px; }
 
-  /* 语言切换 */
-  .lang-toggle { display: flex; gap: 8px; margin-top: 12px; }
-  .lang-btn {
-    padding: 5px 16px; border-radius: 999px; font-size: 13px; cursor: pointer;
-    border: 1px solid #3f3f46; background: #27272a; color: #a1a1aa; transition: all .2s; user-select: none;
-  }
-  .lang-btn:hover { border-color: #f59e0b; color: #e4e4e7; }
-  .lang-btn.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; }
-
-  .tag-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-  .tag {
-    background: #27272a; border: 1px solid #3f3f46; border-radius: 999px;
-    padding: 4px 12px; font-size: 12px; color: #a1a1aa; cursor: pointer;
-    transition: all .2s; user-select: none;
-  }
-  .tag:hover { border-color: #f59e0b; color: #e4e4e7; }
-  .tag.active { background: #f59e0b20; border-color: #f59e0b; color: #fbbf24; }
-
   .loading { text-align: center; padding: 60px 0; display: none; }
   .loading.show { display: block; }
   .spinner {
@@ -203,7 +185,7 @@
 
   <div class="search-box">
     <div class="search-row">
-      <input type="text" id="keywordInput" placeholder="输入搜索关键词，用逗号分隔…" value="{{ keywords|join('，') }}">
+      <input type="text" id="keywordInput" placeholder="输入搜索关键词，用空格或逗号分隔…" value="">
       <button id="searchBtn" onclick="doSearch()">🔍 搜索</button>
     </div>
     <div class="api-key-row">
@@ -224,15 +206,6 @@
         <option value="30" selected>30 条</option>
         <option value="50">50 条</option>
       </select></label>
-    </div>
-    <div class="lang-toggle">
-      <span class="lang-btn active" data-lang="zh" onclick="switchLang(this)">🇨🇳 中文</span>
-      <span class="lang-btn" data-lang="en" onclick="switchLang(this)">🇬🇧 English</span>
-    </div>
-    <div class="tag-list" id="tagList">
-      {% for kw in keywords %}
-      <span class="tag active" onclick="toggleTag(this)">{{ kw }}</span>
-      {% endfor %}
     </div>
   </div>
 
@@ -316,36 +289,6 @@ const tabKeys = ['viewed', 'liked', 'commented', 'engaged', 'rising'];
 const tabLabels = { viewed: '最多观看', liked: '最多点赞', commented: '最多评论', engaged: '互动率最高', rising: '上升最快' };
 const tabIcons = { viewed: '🔥', liked: '👍', commented: '💬', engaged: '⚡', rising: '📈' };
 let currentTab = 'viewed';
-
-const enKeywords = {{ en_keywords|tojson }};
-const zhKeywords = {{ keywords|tojson }};
-let currentLang = 'zh';
-
-function toggleTag(el) {
-  el.classList.toggle('active');
-}
-
-function switchLang(el) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  currentLang = el.dataset.lang;
-  const kwInput = document.getElementById('keywordInput');
-  const tagList = document.getElementById('tagList');
-  if (currentLang === 'en') {
-    kwInput.placeholder = 'Enter keywords, comma separated…';
-    tagList.innerHTML = enKeywords.map(k => `<span class="tag active" onclick="toggleTag(this)">${k}</span>`).join('');
-  } else {
-    kwInput.placeholder = '输入搜索关键词，用逗号分隔…';
-    tagList.innerHTML = zhKeywords.map(k => `<span class="tag active" onclick="toggleTag(this)">${k}</span>`).join('');
-  }
-}
-
-function getActiveKeywords() {
-  const tags = document.querySelectorAll('#tagList .tag');
-  const active = [];
-  tags.forEach(t => { if (t.classList.contains('active')) active.push(t.textContent.trim()); });
-  return active.length ? active : null;
-}
 
 function formatNum(n) {
   if (n >= 10000) return (n / 10000).toFixed(1) + '万';
@@ -595,7 +538,7 @@ async function doSearch() {
   try { localStorage.setItem('yt_api_key', apiKey); } catch(e) {}
 
   const kw = document.getElementById('keywordInput').value.trim();
-  const keywords = getActiveKeywords() || (kw ? kw.split(/[，,]/).map(s => s.trim()).filter(Boolean) : null);
+  const keywords = kw ? kw.split(/[，,、\s]+/).map(s => s.trim()).filter(Boolean) : null;
   if (!keywords || !keywords.length) { showError('请输入至少一个搜索关键词'); return; }
 
   const risingDays = parseInt(document.getElementById('risingDays').value);
@@ -612,7 +555,7 @@ async function doSearch() {
     const resp = await fetch(window.location.origin + '/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keywords, risingDays, maxPerKeyword, apiKey, searchLang: currentLang }),
+      body: JSON.stringify({ keywords, risingDays, maxPerKeyword, apiKey }),
     });
     const result = await resp.json();
     if (result.error) { showError(result.error); return; }

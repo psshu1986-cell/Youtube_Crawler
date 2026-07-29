@@ -27,7 +27,7 @@ PROXY = None
 @app.route("/")
 def index():
     api_base = request.host_url.rstrip("/")
-    return render_template("index.html", keywords=DEFAULT_KEYWORDS, en_keywords=EN_KEYWORDS, api_base=api_base)
+    return render_template("index.html", api_base=api_base)
 
 
 @app.route("/api/search", methods=["POST"])
