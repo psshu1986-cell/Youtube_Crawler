@@ -21,3 +21,11 @@ Thumbs.db
 
 # Flask debug
 instance/
+
+# Python backend (not needed for Cloudflare)
+app.py
+crawler.py
+youtube_api.py
+requirements.txt
+render.yaml
+
